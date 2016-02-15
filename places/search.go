@@ -320,6 +320,8 @@ type RadarSearchCall struct {
 	Keyword string
 	// Restricts results to only those places within the specified price level.
 	MinPrice, MaxPrice *PriceLevel
+	// One or more terms to be matched against the names of places, separated with a space character. Results will be restricted to those containing the passed name values. Note that a place may have additional names associated with it, beyond its listed name. The API will try to match the passed name value against all of these names. As a result, places may be returned in the results whose listed names do not match the search term, but whose associated names do.
+	Name string
 	// Returns only those places that are open for business at the time the query is sent. Places that do not specify opening hours in the Google Places database will not be returned if you include this parameter in your query.
 	OpenNow bool
 	// Restricts the results to places matching at least one of the specified types.
@@ -342,6 +344,9 @@ func (r *RadarSearchCall) query() string {
 	}
 	if r.MaxPrice != nil {
 		query.Add("maxprice", fmt.Sprint(*r.MaxPrice))
+	}
+	if r.Name != "" {
+		query.Add("name", r.Name)
 	}
 	if r.OpenNow {
 		query.Add("opennow", fmt.Sprint(1))
